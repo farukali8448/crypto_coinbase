@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+
+
 const Home = () => {
   const [coins, setCoins] = useState([]);
+  const [search,setSearch]=useState('')
 
   useEffect(() => {
     axios
@@ -15,9 +18,17 @@ const Home = () => {
   });
   return (
     <div className="p-4">
-      <h1 className="text-center  p-4">Crypto Application</h1>
+     <h1 className="text-center  p-4">Crypto Application</h1>
+      <form>
+        <div >
+            <input type="text"placeholder='Search here......' className="p-4 w-75" onChange={(e)=>{setSearch(e.target.value)}} />
+        </div>
+      </form>
+
       <div className="d-flex justify-content-center gap-4 flex-wrap text-center ">
-        {coins.map((coin) => {
+        {coins.filter((item)=>{
+          return search.toLowerCase()===''?item:item.name.toLowerCase().includes(search)
+        }).map((coin) => {
           return (
             <div className="border rounded-6 border-none" key={coin.id}>
               <div className="card border" style={{ width: "16rem", height:"18rem"}}> 
