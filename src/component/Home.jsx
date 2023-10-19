@@ -1,14 +1,19 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-
+// import Pagination from "./Pagination";
 
 const Home = () => {
+  //coin accessing 
   const [coins, setCoins] = useState([]);
+  //searching coin
   const [search,setSearch]=useState('')
 
-  useEffect(() => {
+  
+
+ useEffect(() => {
     axios
       .get(
+        // `https://api.coingecko.com/api/v3/coins/markets?limit=10&skip=${page*10-10}&vs_currency=usd&order=market_cap_desc&sparkline=false&locale=en`
         "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=200&page=1&sparkline=false&locale=en"
       )
       .then((res) => {
@@ -16,12 +21,18 @@ const Home = () => {
         console.log(res.data);
       }, []);
   });
+
+ 
+
+
+
   return (
     <div className="p-4">
+
      <h1 className="text-center  p-4">Crypto Application</h1>
       <form>
-        <div >
-            <input type="text"placeholder='Search here......' className="p-4 w-75" onChange={(e)=>{setSearch(e.target.value)}} />
+        <div className="mb-3 me-5">
+            <input type="text"placeholder='Search here......' className="p-2 w-75 bg-info rounded text-danger" onChange={(e)=>{setSearch(e.target.value)}} />
         </div>
       </form>
 
@@ -36,15 +47,30 @@ const Home = () => {
                   <h5 className="card-title">{coin.name.toUpperCase()}</h5>
                   <h4 className="card-text">{coin.symbol}</h4>
                   <h4 className="card-price text-success">$ {coin.current_price}</h4>
-                  <img src={coin.image} alt="..." className="card-img-top  w-50 h-50 pt-4"/>
+                  <img src={coin.image} alt="img" className="card-img-top  w-50 h-50 pt-4"/>
                 </div>
               </div>
             </div>
           );
         })}
       </div>
+       {/* <Pagination data={coins}/> */}
+     
     </div>
   );
 };
 
 export default Home;
+
+
+ // useEffect(() => {
+  //   axios
+  //     .get(
+  //       `https://api.coingecko.com/api/v3/coins/markets?limit=10&skip=${page*10-10}&vs_currency=usd&order=market_cap_desc&sparkline=false&locale=en`
+  //       // "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=200&page=1&sparkline=false&locale=en"
+  //     )
+  //     .then((res) => {
+  //       setCoins(res.data);
+  //       console.log(res.data);
+  //     }, []);
+  // });
