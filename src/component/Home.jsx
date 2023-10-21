@@ -1,76 +1,69 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
-// import Pagination from "./Pagination";
+import React, { useState,useEffect } from 'react'
+import axios from 'axios'
+import CryptoList from '../component/CryptoList'
+import Loader from './Loader'
+import Pagination from './Pagination'
+
 
 const Home = () => {
-  //coin accessing 
-  const [coins, setCoins] = useState([]);
-  //searching coin
-  const [search,setSearch]=useState('')
+  //fetching coin data
+  const [coinsData,setcoinsData]=useState([])
+  //page
+  const [page,setPage]=useState(1)
+  //loading
+  const [loading,setLoading]=useState(true)
+  //pagination
+  const [currentPage,setCurrentPage]=useState(1) 
+  const [postsPerPage,setPostsPerPage]=useState(21)
 
-  
-
- useEffect(() => {
+//fetching data from server
+useEffect(() => {
     axios
-      .get(
-        // `https://api.coingecko.com/api/v3/coins/markets?limit=10&skip=${page*10-10}&vs_currency=usd&order=market_cap_desc&sparkline=false&locale=en`
-        "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=200&page=1&sparkline=false&locale=en"
-      )
+      .get(`http://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=12&page=${page}&sparkline=false&locale=en`)
       .then((res) => {
-        setCoins(res.data);
-        console.log(res.data);
-      }, []);
-  });
+        setcoinsData(prev=>[...prev,...res.data]);
+        setLoading(false)
+        // console.log(res.data);
+      }).catch(err=>console.log(err));
+  }, [page]);
 
- 
+  //pagination logic
+  const lastPostIndex=currentPage*postsPerPage;
+  const firstPostIndex=lastPostIndex-postsPerPage;
+  const currentPost=coinsData.slice(firstPostIndex,lastPostIndex)
+  
+  //from window we getting the data
+   const handleScroll=()=>{
+        // console.log("Height:",document.documentElement.scrollHeight)
+        // console.log("Top:",document.documentElement.scrollTop);
+        // console.log("window:",window.innerHeight)
 
 
+        if(window.innerHeight+document.documentElement.scrollTop+1 >= document.documentElement.scrollHeight){
+          setLoading(true)
+          setPage(prev=>prev+1)
+        }
+   }
+
+  useEffect(()=>{
+    window.addEventListener('scroll',handleScroll)
+    return ()=>window.removeEventListener("scroll",handleScroll)
+  },[])
 
   return (
-    <div className="p-4">
-
-     <h1 className="text-center  p-4">Crypto Application</h1>
-      <form>
-        <div className="mb-3 me-5">
-            <input type="text"placeholder='Search here......' className="p-2 w-75 bg-info rounded text-danger" onChange={(e)=>{setSearch(e.target.value)}} />
-        </div>
-      </form>
-
-      <div className="d-flex justify-content-center gap-4 flex-wrap text-center ">
-        {coins.filter((item)=>{
-          return search.toLowerCase()===''?item:item.name.toLowerCase().includes(search)
-        }).map((coin) => {
-          return (
-            <div className="border rounded-6 border-none" key={coin.id}>
-              <div className="card border" style={{ width: "16rem", height:"18rem"}}> 
-                <div className="card-body p-5">
-                  <h5 className="card-title">{coin.name.toUpperCase()}</h5>
-                  <h4 className="card-text">{coin.symbol}</h4>
-                  <h4 className="card-price text-success">$ {coin.current_price}</h4>
-                  <img src={coin.image} alt="img" className="card-img-top  w-50 h-50 pt-4"/>
-                </div>
-              </div>
-            </div>
-          );
-        })}
-      </div>
-       {/* <Pagination data={coins}/> */}
-     
+    <div>
+      <h1>Crypto</h1>
+     <CryptoList coinsData={currentPost}/>
+     <Pagination totalPosts={coinsData.length} postsPerPage={postsPerPage} setCurrentPage={setCurrentPage} currentPage={currentPage}  setPostsPerPage={setPostsPerPage}/>
+      { loading &&  <Loader/>}
     </div>
-  );
-};
+  )
+}
 
-export default Home;
+export default Home
 
 
- // useEffect(() => {
-  //   axios
-  //     .get(
-  //       `https://api.coingecko.com/api/v3/coins/markets?limit=10&skip=${page*10-10}&vs_currency=usd&order=market_cap_desc&sparkline=false&locale=en`
-  //       // "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=200&page=1&sparkline=false&locale=en"
-  //     )
-  //     .then((res) => {
-  //       setCoins(res.data);
-  //       console.log(res.data);
-  //     }, []);
-  // });
+
+
+ // `https://api.coingecko.com/api/v3/coins/markets?limit=10&skip=${page*10-10}&vs_currency=usd&order=market_cap_desc&sparkline=false&locale=en`
+ //"https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=200&page=1&sparkline=false&locale=en
