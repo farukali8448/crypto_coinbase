@@ -5,7 +5,7 @@
     margin: 2rem 4rem;
     overflow: hidden;
     box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
-    padding: 1rem 2rem;
+    padding:20px;
     transition: all 0.3s ease;
 }
 
@@ -15,7 +15,7 @@
 
 .card_image {
     width: 200px;
-    height: 200px;
+    height: 100px;
 }
 
 .card_image img {

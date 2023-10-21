@@ -5,6 +5,7 @@ import Loader from './Loader'
 import Pagination from './Pagination'
 
 
+
 const Home = () => {
   //fetching coin data
   const [coinsData,setcoinsData]=useState([])
@@ -14,7 +15,8 @@ const Home = () => {
   const [loading,setLoading]=useState(true)
   //pagination
   const [currentPage,setCurrentPage]=useState(1) 
-  const [postsPerPage,setPostsPerPage]=useState(21)
+  const [postsPerPage,setPostsPerPage]=useState(9)
+ 
 
 //fetching data from server
 useEffect(() => {
@@ -23,8 +25,8 @@ useEffect(() => {
       .then((res) => {
         setcoinsData(prev=>[...prev,...res.data]);
         setLoading(false)
-        // console.log(res.data);
-      }).catch(err=>console.log(err));
+        console.log(res.data);})
+        .catch(err=>console.log(err));
   }, [page]);
 
   //pagination logic
@@ -52,8 +54,10 @@ useEffect(() => {
 
   return (
     <div>
-      <h1>Crypto</h1>
+      <h1 className='text-center p-2'>Crypto Application</h1>
+    
      <CryptoList coinsData={currentPost}/>
+     
      <Pagination totalPosts={coinsData.length} postsPerPage={postsPerPage} setCurrentPage={setCurrentPage} currentPage={currentPage}  setPostsPerPage={setPostsPerPage}/>
       { loading &&  <Loader/>}
     </div>
